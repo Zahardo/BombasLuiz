@@ -11,7 +11,9 @@
     "electron": "electron .",
     "electron-dev": "concurrently \"npm run dev\" \"wait-on http://localhost:5173 && electron .\"",
     "build-electron": "npm run build && electron-builder",
-    "dist": "npm run build && electron-builder --publish=never"
+    "dist": "npm run build && electron-builder --publish=never",
+    "dist-win": "npm run build && electron-builder --win --publish=never",
+    "dist-portable": "npm run build && electron-builder --win portable --publish=never"
   },
   "devDependencies": {
     "vite": "^5.0.0",
@@ -35,12 +37,25 @@
       "preload.js"
     ],
     "win": {
-      "target": "nsis",
-      "icon": "assets/icon.ico"
+      "target": [
+        {
+          "target": "nsis",
+          "arch": ["x64"]
+        },
+        {
+          "target": "portable",
+          "arch": ["x64"]
+        }
+      ],
+      "icon": "assets/icon.ico",
+      "requestedExecutionLevel": "asInvoker",
+      "signAndEditExecutable": false,
+      "verifyUpdateCodeSignature": false
     },
     "mac": {
       "target": "dmg",
-      "icon": "assets/icon.icns"
+      "icon": "assets/icon.icns",
+      "identity": null
     },
     "linux": {
       "target": "AppImage",
@@ -50,7 +65,12 @@
       "oneClick": false,
       "allowToChangeInstallationDirectory": true,
       "createDesktopShortcut": true,
-      "createStartMenuShortcut": true
+      "createStartMenuShortcut": true,
+      "runAfterFinish": false,
+      "requestExecutionLevel": "user"
+    },
+    "portable": {
+      "requestExecutionLevel": "user"
     }
   }
 }
